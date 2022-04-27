@@ -12,11 +12,14 @@ class Busquedas {
 
     get historialCapitalizado(){
 
-        this.historial = this.historial.map( capitalize => {
-            return capitalize.toUpperCase();
-        })
+        return this.historial.map( lugar => {
 
-        return this.historial
+            let palabras = lugar.split(' ');
+            palabras = palabras.map( p => p[0].toUpperCase() + p.substring(1) );
+            
+            return palabras.join(' ');
+
+        })
     }
 
     get paramsMapbox() {
@@ -91,6 +94,7 @@ class Busquedas {
         if( this.historial.includes( lugar.toLocaleLowerCase() ) ){
             return
         }
+        this.historial = this.historial.splice(0, 5);
 
         this.historial.unshift( lugar.toLocaleLowerCase() );
 
@@ -110,11 +114,9 @@ class Busquedas {
     leerDB(){
 
         // Debe existir
+        if( !fs.existsSync(this.dbPatch) ) return;
 
-        // const info readFileSync... patch... {encoding:'utf-8'}
-
-        const info = fs.readFileSync( this.dbPatch, { encoding:'utf-8' } );
-
+        const info = fs.readFileSync( this.dbPatch, { encoding: 'utf-8' } );
         const data = JSON.parse( info );
 
         this.historial = data.historial;
